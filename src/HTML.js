@@ -48,7 +48,9 @@ export default class HTML extends PureComponent {
         baseFontStyle: PropTypes.object.isRequired,
         textSelectable: PropTypes.bool,
         renderersProps: PropTypes.object,
-        allowFontScaling: PropTypes.bool
+        allowFontScaling: PropTypes.bool,
+        highlightNum: PropTypes.number,
+        noteNum: PropTypes.number,
     }
 
     static defaultProps = {
@@ -65,7 +67,9 @@ export default class HTML extends PureComponent {
         tagsStyles: {},
         classesStyles: {},
         textSelectable: false,
-        allowFontScaling: true
+        allowFontScaling: true,
+        highlightNum: 0,
+        noteNum: 0,
     }
 
     constructor (props) {
@@ -84,7 +88,7 @@ export default class HTML extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const { html, uri, renderers } = prevProps;
+        const { html, uri, renderers, highlightNum, noteNum } = prevProps;
         let doParseDOM = false;
 
         this.generateDefaultStyles(this.props.baseFontStyle);
@@ -95,7 +99,7 @@ export default class HTML extends PureComponent {
             // If the source changed, register the new HTML and parse it
             this.registerDOM(this.props);
         }
-        if (this.state.dom !== prevState.dom) {
+        if (this.state.dom !== prevState.dom || highlightNum !== this.props.highlightNum || noteNum !== this.props.noteNum) {
             this.parseDOM(this.state.dom, this.props);
         }
     }
@@ -396,7 +400,9 @@ export default class HTML extends PureComponent {
             ignoredStyles,
             ptSize,
             tagsStyles,
-            textSelectable
+            textSelectable,
+            highlightNum,
+            noteNum,
         } = props;
 
         return RNElements && RNElements.length ? RNElements.map((element, index) => {
